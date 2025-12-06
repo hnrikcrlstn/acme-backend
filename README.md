@@ -70,3 +70,6 @@ workspaces_to_deploy = {
 ## Usage
 When the devs at ACME updates the branch master, staging or dev, the corresponding workspace in Terraform Cloud will update.
 To prevent overdue dev and staging environments, they will auto destroy if they are left inactive for 1 day
+
+## Additional relevant modules
+* https://registry.terraform.io/providers/hashicorp/tfe/latest/docs/resources/workspace_run
