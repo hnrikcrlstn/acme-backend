@@ -6,7 +6,7 @@ Call the module with
 ```hcl
 module "demo-module" {
   for_each = var.workspaces_to_deploy
-  source              = "app.terraform.io/hcarlstein/demo-module/tfe"
+  source              = "app.terraform.io/ACME-backend-organization/acme-backend-module/tfc"
   version             = "1.0.0"
   github_organization = each.value.github_organization
   tfe_organization    = each.value.tfe_organization
