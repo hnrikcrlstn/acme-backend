@@ -1,8 +1,9 @@
 # acme-backend
 
-### Installation
+## Installation
 Add module from the private registry
 Call the module with
+#### main.tf
 ```hcl
 module "demo-module" {
   for_each = var.workspaces_to_deploy
@@ -20,3 +21,52 @@ module "demo-module" {
   }
 }
 ```
+#### terraform.tvars
+```hcl
+workspaces_to_deploy = {
+  prod = {
+    github_organization = "person"
+    tfe_organization    = "ACME-Segregated-Environments"
+
+    workspace_settings = {
+      name = "prod"
+      vcs_repo = {
+        branch     = "master"
+        identifier = "hnrikcrlstn/terraform-acme-segregated-environments"
+      }
+    }
+  }
+
+  staging = {
+    github_organization = "hnrikcrlstn"
+    tfe_organization    = "ACME-Segregated-Environments"
+
+    workspace_settings = {
+      name                           = "acme-demo-staging"
+      auto_destroy_activity_duration = "1d"
+      vcs_repo = {
+        branch     = "staging"
+        identifier = "hnrikcrlstn/terraform-acme-segregated-environments"
+      }
+    }
+  }
+
+  dev = {
+    github_organization = "hnrikcrlstn"
+    tfe_organization    = "ACME-Segregated-Environments"
+
+    workspace_settings = {
+      name                           = "acme-demo-dev"
+      auto_destroy_activity_duration = "1d"
+      vcs_repo = {
+        branch     = "dev"
+        identifier = "hnrikcrlstn/terraform-acme-segregated-environments"
+      }
+    }
+  }
+}
+```
+
+## Usage
+When the devs at ACME updates the branch master, staging or dev, the corresponding workspace in Terraform Cloud will update.
+To prevent overdue dev and staging environments, they will auto destroy if they are left inactive for 1 day
