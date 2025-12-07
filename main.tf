@@ -7,28 +7,12 @@ terraform {
   }
 }
 
-data "tfe_github_app_installation" "this" {
-  name = var.github_organization
-}
-
-resource "tfe_workspace" "this" {
-  name                           = var.workspace_settings.name
-  organization                   = var.tfe_organization
-  auto_destroy_activity_duration = var.workspace_settings.auto_destroy_activity_duration
-  vcs_repo {
-    branch                     = var.workspace_settings.vcs_repo.branch
-    identifier                 = var.workspace_settings.vcs_repo.identifier
-    github_app_installation_id = data.tfe_github_app_installation.this.id
-  }
-}
 variable "github_organization" {
-  type        = string
-  description = "Github organization name"
+  type = string
 }
 
 variable "tfe_organization" {
-  type        = string
-  description = "Terraform organization name"
+  type = string
 }
 
 variable "workspace_settings" {
@@ -40,5 +24,24 @@ variable "workspace_settings" {
       identifier = string
     })
   })
-  description = "Defines the workspaces to be created"
+}
+
+data "tfe_github_app_installation" "this" {
+  name = var.github_organization
+}
+
+resource "tfe_workspace" "this" {
+  name         = var.workspace_settings.name
+  organization = var.tfe_organization
+
+  auto_destroy_activity_duration = try(
+    var.workspace_settings.auto_destroy_activity_duration,
+    null
+  )
+
+  vcs_repo {
+    branch                     = var.workspace_settings.vcs_repo.branch
+    identifier                 = var.workspace_settings.vcs_repo.identifier
+    github_app_installation_id = data.tfe_github_app_installation.this.id
+  }
 }
